@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Contenedor Tipo Elemento</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+        }
+
+
+        /* Contenedor general */
+        .contenedor-tipo {
+            width: 95%;
+            background: #FCEF7C;
+            margin: auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+            border-radius: 10px;
+        }
+
+        /* Cada elemento */
+        .elemento {
+            background: #7CFCE4;
+            height: auto;
+            /* ← ya no está fijo */
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            font-weight: bold;
+        }
+
+
+        @media (max-width:600px) {
+            .contenedor-tipo {
+                grid-template-columns: 1fr;
+            }
+        }
+
+
+        /* Contenedor horizontal que envuelve signo + números */
+        .e1-wrap {
+            position: relative;
+            display: flex;
+            align-items: flex-start;
+            gap: 5px;
+            width: 100%;
+        }
+
+
+        /* SIGNO SUMA — ajusta a contenido */
+        .signo-suma {
+            background: #FAAE9D;
+            border-radius: 6px;
+            padding: 5px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            width: auto;
+            height: auto;
+            flex-shrink: 0;
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+
+        /* Contenedor NUMEROS-SUMA – ajusta al contenido vertical */
+        .numeros-suma {
+            background: #A6FFB2;
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 8px;
+            width: 100%;
+            height: auto;
+            margin-left: 45px;
+        }
+
+        /* LISTA DE NÚMEROS – solo el tamaño necesario */
+        .lista-numeros {
+            border-bottom: 2px solid #000;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            background: #F2B4A7;
+            padding: 5px;
+            font-size: 18px;
+            width: fit-content;
+            /* ← ajusta al contenido */
+            max-width: 100%;
+            /* ← no se sale */
+            height: auto;
+            /* ← ajusta */
+            overflow: visible;
+            /* ← no recorta */
+        }
+
+
+        /* INPUT fijo */
+        .input-respuesta {
+            margin-top: 8px;
+            padding: 4px;
+            border-radius: 6px;
+            border: 1px solid #999;
+            font-size: 16px;
+            width: auto;
+            max-width: max-content;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="contenedor-tipo">
+            <!-- ELEMENTO 1 -->
+            <div class="elemento">
+                <div class="e1-wrap">
+                    <div class="signo-suma">+</div>
+                    <div class="numeros-suma">
+                        <div class="lista-numeros" id="lista-rand"></div>
+                        <input maxlength="12">
+                    </div>
+                </div>
+            </div>
+            <!-- ELEMENTOS 2–10 -->
+            <div class="elemento">
+                <div class="e1-wrap">
+                    <div class="signo-suma">+</div>
+                    <div class="numeros-suma">
+                        <div class="lista-numeros" id="lista-rand"></div>
+                        <input maxlength="12">
+                    </div>
+                </div>
+            </div>
+            <div class="elemento">
+                <div class="e1-wrap">
+                    <div class="signo-suma">+</div>
+                    <div class="numeros-suma">
+                        <div class="lista-numeros" id="lista-rand"></div>
+                        <input maxlength="12">
+                    </div>
+                </div>
+            </div>
+            <div class="elemento">
+                <div class="e1-wrap">
+                    <div class="signo-suma">+</div>
+                    <div class="numeros-suma">
+                        <div class="lista-numeros" id="lista-rand"></div>
+                        <input maxlength="12">
+                    </div>
+                </div>
+            </div>
+            <div class="elemento">
+                <div class="e1-wrap">
+                    <div class="signo-suma">+</div>
+                    <div class="numeros-suma">
+                        <div class="lista-numeros" id="lista-rand"></div>
+                        <input maxlength="12">
+                    </div>
+                </div>
+            </div>
+            <div class="elemento">
+                <div class="e1-wrap">
+                    <div class="signo-suma">+</div>
+                    <div class="numeros-suma">
+                        <div class="lista-numeros" id="lista-rand"></div>
+                        <input maxlength="12">
+                    </div>
+                </div>
+            </div>
+            <div class="elemento">
+                <div class="e1-wrap">
+                    <div class="signo-suma">+</div>
+                    <div class="numeros-suma">
+                        <div class="lista-numeros" id="lista-rand"></div>
+                        <input maxlength="12">
+                    </div>
+                </div>
+            </div>
+            <div class="elemento">
+                <div class="e1-wrap">
+                    <div class="signo-suma">+</div>
+                    <div class="numeros-suma">
+                        <div class="lista-numeros" id="lista-rand"></div>
+                        <input maxlength="12">
+                    </div>
+                </div>
+            </div>
+            <div class="elemento">
+                <div class="e1-wrap">
+                    <div class="signo-suma">+</div>
+                    <div class="numeros-suma">
+                        <div class="lista-numeros" id="lista-rand"></div>
+                        <input maxlength="12">
+                    </div>
+                </div>
+            </div>
+            <div class="elemento">
+                <div class="e1-wrap">
+                    <div class="signo-suma">+</div>
+                    <div class="numeros-suma">
+                        <div class="lista-numeros" id="lista-rand"></div>
+                        <input maxlength="12">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Genera un número aleatorio entre min y max (incluidos)
+        function rand(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+
+        // Generación básica como antes
+        function generarListaAleatoria(elementos, largo) {
+            const lista = [];
+            for (let i = 0; i < elementos; i++) {
+                let num = "";
+                for (let j = 0; j < largo; j++) {
+                    num += Math.floor(Math.random() * 10);
+                }
+                lista.push(num);
+            }
+            return lista;
+        }
+        // NUEVA FUNCIÓN solicitada
+        // Genera una lista donde tanto la cantidad de números como su largo son aleatorios
+        function generarListaAleatoriaVariable(minElementos, maxElementos, minLargo, maxLargo) {
+            const cantidad = rand(minElementos, maxElementos);
+            const lista = [];
+
+
+            for (let i = 0; i < cantidad; i++) {
+                const largo = rand(minLargo, maxLargo);
+                let num = "";
+                for (let j = 0; j < largo; j++) {
+                    num += Math.floor(Math.random() * 10);
+                }
+                lista.push(num);
+            }
+            return lista;
+        }
+
+
+        // Seleccionar TODOS los contenedores .lista-numeros
+        const contenedores = document.querySelectorAll('.lista-numeros');
+
+        console.log(contenedores)
+
+        contenedores.forEach((cont, index) => {
+            const posicion = index + 1;
+            const cantidad = posicion;
+            const largo = posicion;
+
+            const lista = generarListaAleatoria(cantidad, largo);
+
+            // Calcular longitud máxima en esta lista
+            const maxLen = Math.max(...lista.map(n => n.length));
+
+            // Mostrar números  
+            lista.forEach(n => {
+                const d = document.createElement('div');
+                d.textContent = n;
+                cont.appendChild(d);
+            });
+
+            // Ajustar input: inicio = placeholder, máximo = largo mayor + 2 dígitos
+            const input = cont.parentElement.querySelector('.input-respuesta');
+
+            /*
+            // ancho inicial igual al placeholder ("Respuesta")
+            input.style.width = '9ch'; // inicia al tamaño del placeholder
+            const maxChars = maxLen + 2;
+            input.style.maxWidth = (maxChars) + 'ch'; (n => {
+                const d = document.createElement('div');
+                d.textContent = n;
+                cont.appendChild(d);
+            });*/
+        });
+    </script>
+
+
+</body>
+
+</html>

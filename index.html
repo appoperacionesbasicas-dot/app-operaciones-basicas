@@ -5,53 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Operaciones Matemáticas</title>
   <style>
-    body { font-family: Arial; padding: 20px; background: #f4f4f4; }
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f4; }
     .card { background:white; padding:20px; margin-bottom:20px; border-radius:10px; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
-    label { font-weight:bold; }
-    input { margin:5px 0 15px 0; padding:6px; width:100%; }
+    label { font-weight:bold; display:block; margin-top:6px; }
+    select { margin:5px 0 8px 0; padding:6px; width:5%; min-width:50px; box-sizing:border-box; }
     button { padding:10px 15px; border:none; background:#007bff; color:white; cursor:pointer; border-radius:6px; }
-    .operacion { padding:10px; background:#e9e9e9; margin:10px 0; border-radius:6px; }
+    #controls { width:100%; margin-bottom:20px; }
+    .operacion { padding:15px; margin:10px 0; border-radius:10px; color:white; font-weight:bold; display:flex; align-items:center; justify-content:space-between; }
+    .param-block { background:rgba(0,0,0,0.12); padding:10px; border-radius:6px; margin-bottom:10px; display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    .small { font-size:12px; opacity:0.95; }
+    .tipo-container { margin-bottom:20px; }
+    .tipo-titulo { font-size:20px; font-weight:bold; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; }
+    .tipo-titulo span { flex:1; text-align:center; }
+    .switch { cursor:pointer; background:#ccc; border-radius:20px; width:40px; height:20px; position:relative; display:inline-block; }
+    .switch::before { content:''; position:absolute; width:18px; height:18px; background:white; border-radius:50%; top:1px; left:1px; transition:0.3s; }
+    .input-resultado { width:60px; padding:4px; font-size:16px; margin-right:10px; -moz-appearance:textfield; }
+    .input-resultado::-webkit-outer-spin-button, .input-resultado::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .btn-validar { padding:10px 15px; font-size:14px; border:none; border-radius:6px; background:#28a745; color:white; cursor:pointer; }
   </style>
 </head>
 <body>
   <h1>Generador de Operaciones Matemáticas</h1>
-
-  <div class="card" style="width:100%; margin-bottom:20px;">
-    <h2>Parámetros</h2>
-
-    <div style="display:flex; gap:20px; width:100%;">
-      <!-- COLUMNA IZQUIERDA: Suma y Resta -->
-      <div style="flex:1; min-width:200px;">
-        <h3>Suma</h3>
-        <label>Número de elementos:</label>
-        <select id="sumCount"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select>
-        <label>Cifras por elemento:</label>
-        <select id="sumDigits"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option selected>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select>
-
-        <h3>Resta</h3>
-        <label>Cifras por elemento:</label>
-        <select id="resDigits"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option selected>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select>
-      </div>
-
-      <!-- COLUMNA DERECHA: Multiplicación -->
-      <div style="flex:1; min-width:200px;">
-        <h3>Multiplicación</h3>
-        <label>Cifras multiplicando:</label>
-        <select id="mulA"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option selected>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select>
-        <label>Cifras multiplicador:</label>
-        <select id="mulB"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select>
-
-        <h3>División</h3>
-        <label>Cifras dividendo:</label>
-        <select id="divA"><option>1</option><option>2</option><option>3</option><option>4</option><option selected>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select>
-        <label>Cifras divisor:</label>
-        <select id="divB"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select>
-      </div>
-    </div>
-
-    <button onclick="generarOperaciones()">Generar operaciones</button()">Generar operaciones</button>
-    <button style="background:#28a745" onclick="recargarOperaciones()">Cargar desde JSON</button>
-  </div>
+  <button onclick="generarOperaciones()" style="margin:10px 0;">Generar operaciones</button>
 
   <div class="card" style="width:100%;">
     <h2>Operaciones generadas</h2>
@@ -59,85 +34,144 @@
   </div>
 
   <script>
-    // Clave usada para almacenar y recuperar datos desde localStorage
     const LS_KEY = "operaciones_math";
+    const colores={'suma':'#82e8b8','resta':'#f28b82','multiplicacion':'#fbbc04','division':'#aecbfa'};
 
-    // Genera un número aleatorio con la cantidad de dígitos indicada
-    function randomNumero(digits) {
-      const min = Math.pow(10, digits - 1);
-      const max = Math.pow(10, digits) - 1;
-      return Math.floor(Math.random() * (max - min + 1)) + min;
+    function randomNumero(digits){ const min = Math.pow(10,digits-1); const max = Math.pow(10,digits)-1; return Math.floor(Math.random()*(max-min+1))+min; }
+    function generarDivision(divA,divB){ const divisor=randomNumero(divB); const dividendo=randomNumero(divA); const cociente=Math.floor(dividendo/divisor); const residuo=dividendo%divisor; return {dividendo,divisor,cociente,residuo}; }
+
+    function leerParametrosOperacion(){
+      const selects=document.querySelectorAll('#lista select[data-tipo]');
+      const params={};
+      selects.forEach(sel=>{ const tipo=sel.dataset.tipo; const campo=sel.dataset.campo; const val=+sel.value; if(!params[tipo]) params[tipo]={}; params[tipo][campo]=val; });
+      return params;
     }
 
-    // Genera una división exacta asegurando que el residuo sea 0
-    function generarDivisionExacta(divA, divB) {
-      const divisor = randomNumero(divB);
-      const dividendo = randomNumero(divA);
-      const cociente = Math.floor(dividendo / divisor);
-      const residuo = dividendo % divisor;
-      return { dividendo, divisor, cociente, residuo };
-    }
-
-    // Genera todas las operaciones matemáticas basadas en los parámetros seleccionados
-    function generarOperaciones() {
-      const sumCount = +document.getElementById('sumCount').value;
-      const sumDigits = +document.getElementById('sumDigits').value;
-      const resDigits = +document.getElementById('resDigits').value;
-      const mulA = +document.getElementById('mulA').value;
-      const mulB = +document.getElementById('mulB').value;
-      const divA = +document.getElementById('divA').value;
-      const divB = +document.getElementById('divB').value;
-
-      let data = [];
-
-      if(sumCount > 1 && sumDigits > 0){
-        const elementos = Array.from({length: sumCount}, ()=> randomNumero(sumDigits));
-        data.push({ tipo:"suma", elementos, resuelto:false, resultado: elementos.reduce((a,b)=>a+b,0) });
-      }
-
-      if(resDigits > 0){
-        let a = randomNumero(resDigits), b = randomNumero(resDigits);
-        if(a < b) [a,b] = [b,a];
-        data.push({ tipo:"resta", a, b, resuelto:false, resultado: a - b });
-      }
-
-      if(mulA > 0 && mulB > 0){
-        const A = randomNumero(mulA);
-        const B = randomNumero(mulB);
-        data.push({ tipo:"multiplicacion", A, B, resuelto:false, resultado: A * B });
-      }
-
-      if(divA > 0 && divB > 0){
-        const d = generarDivisionExacta(divA, divB);
-        data.push({ tipo:"division", ...d, resuelto:false });
-      }
-
-      localStorage.setItem(LS_KEY, JSON.stringify(data));
-      console.log("JSON generado:", data);
+    function generarOperaciones(){
+      const p=leerParametrosOperacion();
+      let data=[];
+      if(p.suma){ for(let i=0;i<(p.suma.cantidad||1);i++){ const elementos=Array.from({length:(p.suma.count||3)},()=>randomNumero(p.suma.digits||6)); data.push({tipo:"suma",elementos,resuelto:false,resultado:elementos.reduce((a,b)=>a+b,0),params:{count:p.suma.count||3,digits:p.suma.digits||6,cantidad:p.suma.cantidad||1},color:colores['suma']}); } }
+      if(p.resta){ for(let i=0;i<(p.resta.cantidad||1);i++){ let a=randomNumero(p.resta.digits||6),b=randomNumero(p.resta.digits||6); if(a<b) [a,b]=[b,a]; data.push({tipo:"resta",a,b,resuelto:false,resultado:a-b,params:{digits:p.resta.digits||6,cantidad:p.resta.cantidad||1},color:colores['resta']}); } }
+      if(p.multiplicacion){ for(let i=0;i<(p.multiplicacion.cantidad||1);i++){ const A=randomNumero(p.multiplicacion.A||6); const B=randomNumero(p.multiplicacion.B||2); data.push({tipo:"multiplicacion",A,B,resuelto:false,resultado:A*B,params:{A:p.multiplicacion.A||6,B:p.multiplicacion.B||2,cantidad:p.multiplicacion.cantidad||1},color:colores['multiplicacion']}); } }
+      if(p.division){ for(let i=0;i<(p.division.cantidad||1);i++){ const d=generarDivision(p.division.A||5,p.division.B||2); data.push({tipo:"division",...d,resuelto:false,params:{A:p.division.A||5,B:p.division.B||2,cantidad:p.division.cantidad||1},color:colores['division']}); } }
+      localStorage.setItem(LS_KEY,JSON.stringify(data));
+      console.log("JSON generado:",data);
       mostrar();
     }
 
-    // Carga las operaciones desde el JSON guardado en localStorage
-    function recargarOperaciones(){ mostrar(); }
+    function validarOperacion(op, input){
+      const valor=parseInt(input.value);
+      if(valor===op.resultado){
+        alert('¡Correcto! La operación se resolvió correctamente.');
+        op.resuelto=true;
+        localStorage.setItem(LS_KEY,JSON.stringify(JSON.parse(localStorage.getItem(LS_KEY))));
+      } else {
+        alert('Incorrecto. Intenta de nuevo.');
+      }
+    }
 
-    // Muestra las operaciones guardadas en pantalla
     function mostrar(){
-      const cont = document.getElementById('lista');
-      const data = JSON.parse(localStorage.getItem(LS_KEY) || "[]");
-      cont.innerHTML = "";
+      const cont=document.getElementById('lista');
+      const data=JSON.parse(localStorage.getItem(LS_KEY)||'[]');
+      cont.innerHTML='';
 
-      data.forEach(op => {
-        let txt = "";
-        if(op.tipo==="suma") txt = op.elementos.join(" + ");
-        if(op.tipo==="resta") txt = `${op.a} - ${op.b}`;
-        if(op.tipo==="multiplicacion") txt = `${op.A} × ${op.B}`;
-        if(op.tipo==="division") txt = `${op.dividendo} ÷ ${op.divisor}`;
+      const tipos=['suma','resta','multiplicacion','division'];
+      tipos.forEach(tipo=>{
+        const ops=data.filter(op=>op.tipo===tipo);
+        if(ops.length===0) return;
+        const tipoCont=document.createElement('div');
+        tipoCont.className='tipo-container';
+        const titulo=document.createElement('div');
+        titulo.className='tipo-titulo';
+        const spanTitulo=document.createElement('span');
+        spanTitulo.textContent=tipo.toUpperCase();
+        titulo.appendChild(spanTitulo);
+        const switchBtn=document.createElement('div');
+        switchBtn.className='switch';
+        titulo.appendChild(switchBtn);
+        tipoCont.appendChild(titulo);
 
-        cont.innerHTML += `<div class='operacion'><strong>${op.tipo.toUpperCase()}</strong><br>${txt}</div>`;
+        const firstOp = ops[0];
+        const paramBlock=document.createElement('div');
+        paramBlock.className='param-block';
+
+        if(firstOp.params.count!==undefined){
+          const lbl=document.createElement('label'); lbl.textContent='Número de elementos'; paramBlock.appendChild(lbl);
+          const sel=document.createElement('select'); sel.dataset.tipo=tipo; sel.dataset.campo='count'; sel.dataset.index=0;
+          for(let n=1;n<=10;n++){ const opt=document.createElement('option'); opt.value=n; if(n===firstOp.params.count) opt.selected=true; opt.textContent=n; sel.appendChild(opt); }
+          paramBlock.appendChild(sel);
+        }
+        if(firstOp.params.digits!==undefined){
+          const lbl=document.createElement('label'); lbl.textContent='Cifras por elemento'; paramBlock.appendChild(lbl);
+          const sel=document.createElement('select'); sel.dataset.tipo=tipo; sel.dataset.campo='digits'; sel.dataset.index=0;
+          for(let n=1;n<=10;n++){ const opt=document.createElement('option'); opt.value=n; if(n===firstOp.params.digits) opt.selected=true; opt.textContent=n; sel.appendChild(opt); }
+          paramBlock.appendChild(sel);
+        }
+        if(firstOp.params.A!==undefined){
+          const lbl=document.createElement('label'); lbl.textContent='Cifras multiplicando'; paramBlock.appendChild(lbl);
+          const sel=document.createElement('select'); sel.dataset.tipo=tipo; sel.dataset.campo='A'; sel.dataset.index=0;
+          for(let n=1;n<=10;n++){ const opt=document.createElement('option'); opt.value=n; if(n===firstOp.params.A) opt.selected=true; opt.textContent=n; sel.appendChild(opt); }
+          paramBlock.appendChild(sel);
+          const lbl2=document.createElement('label'); lbl2.textContent='Cifras multiplicador'; paramBlock.appendChild(lbl2);
+          const sel2=document.createElement('select'); sel2.dataset.tipo=tipo; sel2.dataset.campo='B'; sel2.dataset.index=0;
+          for(let n=1;n<=10;n++){ const opt=document.createElement('option'); opt.value=n; if(n===firstOp.params.B) opt.selected=true; opt.textContent=n; sel2.appendChild(opt); }
+          paramBlock.appendChild(sel2);
+        }
+        if(firstOp.params.cantidad!==undefined){
+          const lbl=document.createElement('label'); lbl.textContent='Cantidad'; paramBlock.appendChild(lbl);
+          const sel=document.createElement('select'); sel.dataset.tipo=tipo; sel.dataset.campo='cantidad'; sel.dataset.index=0;
+          for(let n=1;n<=10;n++){ const opt=document.createElement('option'); opt.value=n; if(n===firstOp.params.cantidad) opt.selected=true; opt.textContent=n; sel.appendChild(opt); }
+          paramBlock.appendChild(sel);
+        }
+
+        tipoCont.appendChild(paramBlock);
+
+        ops.forEach((op,index)=>{
+          let txt='';
+          if(op.tipo==='suma') txt=op.elementos.join(' + ');
+          if(op.tipo==='resta') txt=`${op.a} - ${op.b}`;
+          if(op.tipo==='multiplicacion') txt=`${op.A} × ${op.B}`;
+          if(op.tipo==='division') txt=`${op.dividendo} ÷ ${op.divisor}`;
+          const divOp=document.createElement('div');
+          divOp.style.fontSize='18px';
+          divOp.style.margin='10px 0';
+          divOp.style.background=op.color||'#82e8b8';
+          divOp.style.display='flex';
+          divOp.style.alignItems='center';
+          divOp.style.justifyContent='space-between';
+
+          const spanTxt=document.createElement('span');
+          spanTxt.textContent=txt;
+          divOp.appendChild(spanTxt);
+
+          const input=document.createElement('input');
+          input.type='number';
+          input.min='0';
+          input.step='1';
+          input.className='input-resultado';
+          input.placeholder='Resultado';
+          divOp.appendChild(input);
+
+          const btn=document.createElement('button');
+          btn.textContent='Validar';
+          btn.className='btn-validar';
+          btn.onclick=()=>validarOperacion(op,input);
+          divOp.appendChild(btn);
+
+          tipoCont.appendChild(divOp);
+        });
+        cont.appendChild(tipoCont);
       });
     }
 
-    mostrar();
+    (function(){
+      const today=new Date().toISOString().slice(0,10);
+      const data=JSON.parse(localStorage.getItem(LS_KEY)||'[]');
+      const storedDate=localStorage.getItem(LS_KEY+'_fecha');
+      if(data.length>0 && storedDate===today){ mostrar(); return; }
+      generarOperaciones();
+      localStorage.setItem(LS_KEY+'_fecha',today);
+    })();
   </script>
 </body>
 </html>
